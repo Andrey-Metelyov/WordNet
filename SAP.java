@@ -1,7 +1,7 @@
+import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 public class SAP {
@@ -78,12 +78,22 @@ public class SAP {
         In in = new In("digraph1.txt");
         Digraph G = new Digraph(in);
         SAP sap = new SAP(G);
-        while (!StdIn.isEmpty()) {
-            int v = StdIn.readInt();
-            int w = StdIn.readInt();
-            int length   = sap.length(v, w);
-            int ancestor = sap.ancestor(v, w);
-            StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
-        }
+        // while (!StdIn.isEmpty()) {
+        //     int v = StdIn.readInt();
+        //     int w = StdIn.readInt();
+        //     int length   = sap.length(v, w);
+        //     int ancestor = sap.ancestor(v, w);
+        //     StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
+        // }
+        Bag<Integer> v = new Bag<>();
+        Bag<Integer> w = new Bag<>();
+        v.add(7);
+        v.add(2);
+        v.add(11);
+        w.add(4);
+        w.add(9);
+        int length   = sap.length(v, w);
+        int ancestor = sap.ancestor(v, w);
+        StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
     }
 }
