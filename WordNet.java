@@ -107,32 +107,43 @@ public class WordNet {
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB) {
+        checkNouns(nounA, nounB);
         Bag<Integer> bagA = nouns.get(nounA);
         Bag<Integer> bagB = nouns.get(nounB);
         SAP sap = new SAP(G);
         return sap.length(bagA, bagB);
     }
 
+    private void checkNouns(String nounA, String nounB) {
+        if (!isNoun(nounA) || !isNoun(nounB)) {
+            throw new IllegalArgumentException("Any of the noun arguments in distance() or sap() is not a WordNet noun");
+        }
+    }
+
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
     // in a shortest ancestral path (defined below)
     public String sap(String nounA, String nounB) {
+        checkNouns(nounA, nounB);
         Bag<Integer> bagA = nouns.get(nounA);
         Bag<Integer> bagB = nouns.get(nounB);
         SAP sap = new SAP(G);
         int ancestor = sap.ancestor(bagA, bagB);
         Bag<String> ancestors = synset.get(ancestor);
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (String s : ancestors) {
-            result += s + " ";
+            result.append(s).append(" ");
         }
-        return result;
+        return result.toString();
     }
 
     // do unit testing of this class
     public static void main(String[] args) {
-        WordNet wordNet = new WordNet("synsets.txt", "hypernyms.txt");
+        args = new String[] { "synsets.txt", "hypernyms.txt", "worm", "bird" };
+        WordNet wordNet = new WordNet(args[0], args[1]);
+        // wordNet = new WordNet("synsets.txt", null);
+        // wordNet = new WordNet(null, "hypernyms.txt");
         // System.out.println(wordNet.nouns());
-        System.out.println(wordNet.distance("worm", "bird"));
-        System.out.println(wordNet.sap("worm", "bird"));
+        System.out.println(wordNet.distance(args[2], args[3]));
+        System.out.println(wordNet.sap(args[2], args[3]));
     }
 }
