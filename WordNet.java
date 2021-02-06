@@ -91,8 +91,30 @@ public class WordNet {
                 G.addEdge(key, hyp);
             }
         }
+        checkRootedGraph(G);
         // System.out.println(G.V());
         // System.out.println(G.E());
+    }
+
+    private void checkRootedGraph(Digraph G) {
+        int root = findRoot(0, G);
+        for (int v = 1; v < G.V(); v++) {
+            int r = findRoot(v, G);
+            if (r != root) {
+                throw new IllegalArgumentException("The input to the constructor does not correspond to a rooted DAG.");
+            }
+        }
+    }
+
+    private int findRoot(int v, Digraph G) {
+        int root = v;
+        while (G.outdegree(root) != 0) {
+            root = G.adj(root).iterator().next();
+            if (root == v) {
+                throw new IllegalArgumentException("The input to the constructor does not correspond to a rooted DAG (cycle found).");
+            }
+        }
+        return root;
     }
 
     // returns all WordNet nouns
@@ -138,7 +160,8 @@ public class WordNet {
 
     // do unit testing of this class
     public static void main(String[] args) {
-        args = new String[] { "synsets.txt", "hypernyms.txt", "worm", "bird" };
+        // args = new String[] { "synsets.txt", "hypernyms.txt", "worm", "bird" };
+        args = new String[] { "synsets.txt", "hypernyms8WrongBFS.txt", "worm", "bird" };
         WordNet wordNet = new WordNet(args[0], args[1]);
         // wordNet = new WordNet("synsets.txt", null);
         // wordNet = new WordNet(null, "hypernyms.txt");
