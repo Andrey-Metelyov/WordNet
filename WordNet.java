@@ -13,7 +13,6 @@ import edu.princeton.cs.algs4.ST;
 public class WordNet {
     private final ST<Integer, Bag<String>> synset = new ST<>();
     private final ST<String, Bag<Integer>> nouns = new ST<>();
-    private Digraph G;
     private SAP sap;
 
     public WordNet(String synsets, String hypernyms) {
@@ -87,15 +86,15 @@ public class WordNet {
             }
             st.put(id, bag);
         }
-        G = new Digraph(keys.size());
+        Digraph g = new Digraph(keys.size());
         for (int key : st) {
             Bag<Integer> hyps = st.get(key);
             for (int hyp : hyps) {
-                G.addEdge(key, hyp);
+                g.addEdge(key, hyp);
             }
         }
-        checkRootedGraph(G);
-        sap = new SAP(G);
+        checkRootedGraph(g);
+        sap = new SAP(g);
         // System.out.println(G.V());
         // System.out.println(G.E());
     }
