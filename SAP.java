@@ -140,9 +140,9 @@ public class SAP {
         // }
         Bag<Integer> v = new Bag<>();
         Bag<Integer> w = new Bag<>();
-        v.add(7);
-        v.add(2);
-        v.add(1);
+        v.add(0);
+        v.add(-1);
+        v.add(3);
         w.add(4);
         w.add(9);
         int length   = sap.length(v, w);

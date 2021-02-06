@@ -14,6 +14,7 @@ public class WordNet {
     private final ST<Integer, Bag<String>> synset = new ST<>();
     private final ST<String, Bag<Integer>> nouns = new ST<>();
     private Digraph G;
+    private SAP sap;
 
     public WordNet(String synsets, String hypernyms) {
         processSynsets(synsets);
@@ -94,6 +95,7 @@ public class WordNet {
             }
         }
         checkRootedGraph(G);
+        sap = new SAP(G);
         // System.out.println(G.V());
         // System.out.println(G.E());
     }
@@ -144,7 +146,6 @@ public class WordNet {
         checkNouns(nounA, nounB);
         Bag<Integer> bagA = nouns.get(nounA);
         Bag<Integer> bagB = nouns.get(nounB);
-        SAP sap = new SAP(G);
         return sap.length(bagA, bagB);
     }
 
@@ -161,7 +162,6 @@ public class WordNet {
         checkNouns(nounA, nounB);
         Bag<Integer> bagA = nouns.get(nounA);
         Bag<Integer> bagB = nouns.get(nounB);
-        SAP sap = new SAP(G);
         int ancestor = sap.ancestor(bagA, bagB);
         Bag<String> ancestors = synset.get(ancestor);
         StringBuilder result = new StringBuilder();
@@ -174,7 +174,7 @@ public class WordNet {
     // do unit testing of this class
     public static void main(String[] args) {
         // args = new String[] { "synsets.txt", "hypernyms.txt", "worm", "bird" };
-        args = new String[] { "synsets.txt", "hypernyms6InvalidTwoRoots.txt", "worm", "bird" };
+        // args = new String[] { "synsets.txt", "hypernyms6InvalidTwoRoots.txt", "worm", "bird" };
         WordNet wordNet = new WordNet(args[0], args[1]);
         // wordNet = new WordNet("synsets.txt", null);
         // wordNet = new WordNet(null, "hypernyms.txt");
