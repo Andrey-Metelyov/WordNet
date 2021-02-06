@@ -5,11 +5,11 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 
 public class SAP {
-    private Digraph G;
+    private final Digraph G;
     private int cachedLength;
     private int cachedAncestor;
-    private Iterable<Integer> lastComputedV;
-    private Iterable<Integer> lastComputedW;
+    private Iterable<Integer> lastComputedV = null;
+    private Iterable<Integer> lastComputedW = null;
     private BreadthFirstDirectedPaths bfdpV;
     private BreadthFirstDirectedPaths bfdpW;
 
@@ -18,7 +18,7 @@ public class SAP {
         if (G == null) {
             throw new IllegalArgumentException("Digraph G is null");
         }
-        this.G = G;
+        this.G = new Digraph(G);
     }
 
     // length of shortest ancestral path between v and w; -1 if no such path
@@ -49,6 +49,12 @@ public class SAP {
                 }
             }
         }
+        Bag<Integer> vBag = new Bag<>();
+        vBag.add(v);
+        Bag<Integer> wBag = new Bag<>();
+        wBag.add(w);
+        lastComputedV = vBag;
+        lastComputedW = wBag;
         cachedLength = minLength;
         cachedAncestor = ancestor;
         return ancestor;
@@ -90,6 +96,9 @@ public class SAP {
     }
 
     private boolean checkCachedResult(int v, int w) {
+        if (lastComputedV == null || lastComputedW == null) {
+            return false;
+        }
         for (Integer vv : lastComputedV) {
             if (vv != v) {
                 return false;
@@ -100,7 +109,7 @@ public class SAP {
                 return false;
             }
         }
-        StdOut.println("Use cached result");
+        // StdOut.println("Use cached result");
         return true;
     }
 
@@ -109,7 +118,7 @@ public class SAP {
             throw new IllegalArgumentException("v or w is null");
         }
         if (v.equals(lastComputedV) && w.equals(lastComputedW)) {
-            StdOut.println("Use cached result");
+            // StdOut.println("Use cached result");
             return true;
         }
         return false;
@@ -133,14 +142,15 @@ public class SAP {
         Bag<Integer> w = new Bag<>();
         v.add(7);
         v.add(2);
-        v.add(null);
+        v.add(1);
         w.add(4);
         w.add(9);
         int length   = sap.length(v, w);
         int ancestor = sap.ancestor(v, w);
         StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
-        length   = sap.length(v, w);
-        ancestor = sap.ancestor(v, w);
+        length   = sap.length(2, 3);
+        ancestor = sap.ancestor(3, 4);
+        ancestor = sap.ancestor(3, 4);
         StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
     }
 }

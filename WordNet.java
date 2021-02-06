@@ -11,9 +11,14 @@ import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.ST;
 
 public class WordNet {
-    private ST<Integer, Bag<String>> synset = new ST<>();
-    private ST<String, Bag<Integer>> nouns = new ST<>();
+    private final ST<Integer, Bag<String>> synset = new ST<>();
+    private final ST<String, Bag<Integer>> nouns = new ST<>();
     private Digraph G;
+
+    public WordNet(String synsets, String hypernyms) {
+        processSynsets(synsets);
+        processHypernyms(hypernyms);
+    }
 
     private void processSynsets(String synsets) {
         In in = new In(synsets);
@@ -31,13 +36,14 @@ public class WordNet {
                     idBag.add(id);
                     nouns.put(noun, idBag);
                     // System.out.println(noun);
-                } else {
+                }
+                else {
                     Bag<Integer> idBag = new Bag<>();
                     idBag.add(id);
                     nouns.put(noun, idBag);
                 }
             }
-            String gloss = elements[2];
+            // String gloss = elements[2];
 
             synset.put(id, nounsBag);
 
@@ -52,12 +58,8 @@ public class WordNet {
         //     System.out.println(noun + ": " + nouns.get(noun));
         // }
     }
-    // + ": c + nouns.get(noun)onstructor takes the name of the two input files
-    public WordNet(String synsets, String hypernyms) {
-        processSynsets(synsets);
-        processHypernyms(hypernyms);
-    }
 
+    // + ": c + nouns.get(noun)onstructor takes the name of the two input files
     private void processHypernyms(String hypernyms) {
         In in = new In(hypernyms);
         String line;
@@ -85,9 +87,9 @@ public class WordNet {
             st.put(id, bag);
         }
         G = new Digraph(keys.size());
-        for (Integer key : st) {
+        for (int key : st) {
             Bag<Integer> hyps = st.get(key);
-            for (Integer hyp : hyps) {
+            for (int hyp : hyps) {
                 G.addEdge(key, hyp);
             }
         }
@@ -96,22 +98,32 @@ public class WordNet {
         // System.out.println(G.E());
     }
 
-    private void checkRootedGraph(Digraph G) {
-        int root = findRoot(0, G);
-        for (int v = 1; v < G.V(); v++) {
-            int r = findRoot(v, G);
+    private void checkRootedGraph(Digraph digraph) {
+        // DirectedCycle directedCycle = new DirectedCycle(digraph);
+        // if (!directedCycle.hasCycle()) {
+        //     Topological topological = new Topological(digraph);
+        //     if (topological.hasOrder()) {
+        //         return;
+        //     }
+        // }
+        // throw new IllegalArgumentException(
+        //         "The input to the constructor does not correspond to a rooted DAG.");
+        int root = findRoot(0, digraph);
+        for (int v = 1; v < digraph.V(); v++) {
+            int r = findRoot(v, digraph);
             if (r != root) {
                 throw new IllegalArgumentException("The input to the constructor does not correspond to a rooted DAG.");
             }
         }
     }
 
-    private int findRoot(int v, Digraph G) {
+    private int findRoot(int v, Digraph digraph) {
         int root = v;
-        while (G.outdegree(root) != 0) {
-            root = G.adj(root).iterator().next();
+        while (digraph.outdegree(root) != 0) {
+            root = digraph.adj(root).iterator().next();
             if (root == v) {
-                throw new IllegalArgumentException("The input to the constructor does not correspond to a rooted DAG (cycle found).");
+                throw new IllegalArgumentException(
+                        "The input to the constructor does not correspond to a rooted DAG (cycle found).");
             }
         }
         return root;
@@ -138,7 +150,8 @@ public class WordNet {
 
     private void checkNouns(String nounA, String nounB) {
         if (!isNoun(nounA) || !isNoun(nounB)) {
-            throw new IllegalArgumentException("Any of the noun arguments in distance() or sap() is not a WordNet noun");
+            throw new IllegalArgumentException(
+                    "Any of the noun arguments in distance() or sap() is not a WordNet noun");
         }
     }
 
@@ -161,7 +174,7 @@ public class WordNet {
     // do unit testing of this class
     public static void main(String[] args) {
         // args = new String[] { "synsets.txt", "hypernyms.txt", "worm", "bird" };
-        args = new String[] { "synsets.txt", "hypernyms8WrongBFS.txt", "worm", "bird" };
+        args = new String[] { "synsets.txt", "hypernyms6InvalidTwoRoots.txt", "worm", "bird" };
         WordNet wordNet = new WordNet(args[0], args[1]);
         // wordNet = new WordNet("synsets.txt", null);
         // wordNet = new WordNet(null, "hypernyms.txt");
